@@ -1,0 +1,40 @@
+name: Deployy
+  
+on:
+    push:
+      # A ação será disparada quando for feito push
+      # na branch main
+      branches: [ main ]
+
+pemissions:
+  contents: write
+
+jobs:
+    build-and-deploy:
+      # Específica a arquitetura do container de build
+      runs-on: ubuntu-latest
+
+      # Passos da tarefa
+      steps:
+          # 1) Clona o reposittório no container
+          - uses: actions/checkout@v3
+
+          # 2) Assegura que o node está instalado no
+          #    container com um versão especifica
+          - name: Use Node.js v. 20
+            uses: actions/setup-node@v3
+            with:
+              node-version: 20
+              cache: 'npm'
+
+          # 3) Instala as dependências
+          - run: npm install
+
+          # 4) Faz o build
+          - run: npm run build
+
+          # 5) Faz a publicação no GitHub Pages
+          - name: Deploy
+            uses: JamesIves/github-pages-deploy-action@v4
+            with:
+              folder: karangos/dist
